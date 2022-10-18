@@ -1,0 +1,16 @@
+---
+- name: Create Node Exporter Binary.
+  file:
+    src: /root/monitoring/node_exporter/node_exporter
+    dest: /usr/local/bin/node_exporter
+    owner: root
+    group: root
+    state: link
+
+- name: Create Node Exporter Service.
+  copy:
+    src: files/services/node_exporter.service
+    dest: /etc/systemd/system/node_exporter.service
+    owner: root
+    group: root
+    mode: '0644'

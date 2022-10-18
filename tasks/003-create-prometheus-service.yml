@@ -1,0 +1,32 @@
+---
+- name: Create Prometheus log directory.
+  file:
+    path: /var/log/prometheus
+    owner: root
+    group: root
+    state: directory
+    mode: '0644'
+
+- name: Create Prometheus log file.
+  file:
+    path: /var/log/prometheus/prometheus.log
+    owner: root
+    group: root
+    state: touch
+    mode: '0644'
+
+- name: Create Prometheus Binary.
+  file:
+    src: /root/monitoring/prometheus/prometheus
+    dest: /usr/local/bin/prometheus
+    owner: root
+    group: root
+    state: link
+
+- name: Create Prometheus Service.
+  copy:
+    src: files/services/prometheus.service
+    dest: /etc/systemd/system/prometheus.service
+    owner: root
+    group: root
+    mode: '0644'

@@ -1,0 +1,46 @@
+---
+# 001-install-packages.yml
+s3_uri: ""
+
+# 001-install-packages.yml && 002-install-grafana.yml
+list_prometheus_packages:
+  prometheus: ""
+  node_exporter: ""
+  alertmanager: ""
+  grafana: ""
+
+# 010-config-prometheus.yml && prometheus.yml
+list_rules_files:
+  - node_exporter_recording_rules.yml
+  - cpu_alert.yml
+  - ram_alert.yml
+  - filesystems_alert.yml
+  - process_alert.yml
+
+
+#
+# prometheus.yml
+###
+list_prometheus_node_jobs: {}
+
+AWS_REGION: ""
+
+AWS_ACCESS_KEY_ID: ""
+
+AWS_SECRET_ACCESS_KEY: ""
+
+list_autoscaling_node_jobs: []
+
+# rules/*.yml
+list_monitored_hosts: []
+
+# rules/process_alert.yml
+list_process_alerts: []
+
+
+#
+# alertmanager.yml
+###
+slack_hook: ''
+
+slack_channel: ''

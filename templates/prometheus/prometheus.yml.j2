@@ -1,0 +1,56 @@
+# my global config
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - localhost:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+{% for rule_file in list_rules_files %}
+  - "{{ rule_file }}"
+{% endfor %}
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+#  - job_name: 'prometheus'
+#    static_configs:
+#    - targets: ['localhost:9090']
+{% for host, ip in list_prometheus_node_jobs.items() %}
+  - job_name: 'node_{{ host|e }}'
+    static_configs:
+    - targets: ['{{ ip|e }}:9100']
+    relabel_configs:
+    - source_labels: [__address__]
+      regex: '.*'
+      target_label: instance
+      replacement: '{{ host|e }}'
+{% endfor %}
+  # Autoscaling Groups Jobs
+  - job_name: 'node_autoscaling'
+    ec2_sd_configs:
+    - region: "{{ AWS_REGION }}"
+      port: 9100
+      access_key: "{{ AWS_ACCESS_KEY_ID }}"
+      secret_key: "{{ AWS_SECRET_ACCESS_KEY }}"
+    relabel_configs:
+{% for autoscaling_tag in list_autoscaling_node_jobs %}
+    - action: replace
+      source_labels: [__meta_ec2_tag_{{ autoscaling_tag }}]
+      target_label: instance
+      regex: ([a-zA-Z0-9\-]+)
+      replacement: $1
+    - action: replace
+      source_labels: [__meta_ec2_tag_{{ autoscaling_tag }}, __meta_ec2_private_ip]
+      separator: ':'
+      regex: ([a-zA-Z0-9\-]+):((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))
+      target_label: instance
+      replacement: $1:$2
+{% endfor %}

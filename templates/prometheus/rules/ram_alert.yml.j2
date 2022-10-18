@@ -1,0 +1,13 @@
+groups:
+- name: ram_alert
+  rules:
+{% for host in list_monitored_hosts %}
+  - alert: HighRAMUsage
+    expr: 100 * (1 - ((avg_over_time(node_memory_MemFree_bytes{instance="{{ host|e }}"}[10m]) + avg_over_time(node_memory_Cached_bytes{instance="{{ host|e }}"}[10m]) + avg_over_time(node_memory_Buffers_bytes{instance="{{ host|e }}"}[10m])) / avg_over_time(node_memory_MemTotal_bytes{instance="{{ host|e }}"}[10m]))) > 80
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Instance {{ host|e }}: High RAM Usage"
+      description: "{{ host|e }} has a RAM Usage of (current value: {{ '{{' }} $value {{ '}}' }})"
+{% endfor %}

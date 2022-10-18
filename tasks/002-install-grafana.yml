@@ -1,0 +1,13 @@
+---
+- name: Download Grafana package
+  get_url:
+    url: "https://dl.grafana.com/oss/release/{{ list_prometheus_packages.grafana }}"
+    dest: /tmp/
+
+- name: Install Grafana package
+  apt: deb="/tmp/{{ list_prometheus_packages.grafana }}"
+
+- name: Cleanup
+  file:
+    state: absent
+    path: "/tmp/{{ list_prometheus_packages.grafana }}"

@@ -1,0 +1,16 @@
+---
+- name: Create Alertmanager Binary.
+  file:
+    src: /root/monitoring/alertmanager/alertmanager
+    dest: /usr/local/bin/alertmanager
+    owner: root
+    group: root
+    state: link
+
+- name: Create Alertmanager Service.
+  copy:
+    src: files/services/alertmanager.service
+    dest: /etc/systemd/system/alertmanager.service
+    owner: root
+    group: root
+    mode: '0644'

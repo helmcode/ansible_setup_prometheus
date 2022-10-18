@@ -1,0 +1,21 @@
+groups:
+- name: filesystem_alert
+  rules:
+{% for host in list_monitored_hosts %}
+
+  - alert: HighFilesystemOccupancy
+    expr: 100 - (node_filesystem_avail_bytes{instance="{{ host|e }}",mountpoint="/"} / node_filesystem_size_bytes{instance="{{ host|e }}",mountpoint="/"} * 100) > 80
+    labels:
+      severity: warning
+    annotations:
+      summary: "Instance {{ host|e }}: High Filesystem Occupancy"
+      description: "{{ host|e }} has a Filesystem Occupancy of (current value: {{ '{{' }} $value {{ '}}' }})"
+
+  - alert: CriticalFilesystemOccupancy
+    expr: 100 - (node_filesystem_avail_bytes{instance="{{ host|e }}",mountpoint="/"} / node_filesystem_size_bytes{instance="{{ host|e }}",mountpoint="/"} * 100) > 90
+    labels:
+      severity: critical
+    annotations:
+      summary: "Instance {{ host|e }}: Critical Filesystem Occupancy"
+      description: "{{ host|e }} has a Filesystem Occupancy of (current value: {{ '{{' }} $value {{ '}}' }})"
+{% endfor %}

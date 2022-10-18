@@ -1,0 +1,32 @@
+---
+- import_tasks: 001-install-packages.yml
+  tags:
+    - monitors_install_packages
+
+- import_tasks: 002-install-grafana.yml
+  tags:
+    - monitors_install_grafana
+
+- import_tasks: 003-create-prometheus-service.yml
+  tags:
+    - monitors_create_prometheus_service
+
+- import_tasks: 004-create-node-exporter-service.yml
+  tags:
+    - monitors_create_node_exporter_service
+
+- import_tasks: 005-create-alertmanager-service.yml
+  tags:
+    - monitors_create_alertmanager_service
+
+- import_tasks: 010-config-prometheus.yml
+  tags:
+    - monitors_config_prometheus
+
+- import_tasks: 011-config-alertmanager.yml
+  tags:
+    - monitors_config_alertmanager
+
+- import_tasks: 999-restart-services.yml
+  tags:
+    - monitors_restart_services

@@ -1,0 +1,46 @@
+---
+- name: Reload the service files to include the new service
+  shell:
+    cmd: systemctl daemon-reload
+
+- name: Restarted Node Exporter
+  service:
+    name: node_exporter
+    state: restarted
+
+- name: Restarted Prometheus
+  service:
+    name: prometheus
+    state: restarted
+
+- name: Restarted and Enabled Grafana Server.
+  service:
+    name: grafana-server
+    state: restarted
+    enabled: yes
+
+- name: Restarted Alertmanager.
+  service:
+    name: alertmanager
+    state: restarted
+
+- name: Ensure Prometheus is running
+  service:
+    name: prometheus
+    state: started
+
+- name: Ensure Node Exporter is running
+  service:
+    name: node_exporter
+    state: started
+
+- name: Ensure Grafana is running
+  service:
+    name: grafana-server
+    state: started
+
+- name: Ensure Alertmanager is running
+  service:
+    name: alertmanager
+    state: started
+

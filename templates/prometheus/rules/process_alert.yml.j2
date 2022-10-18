@@ -1,0 +1,14 @@
+groups:
+- name: process_alert
+  rules:
+{% for host in list_monitored_hosts %}
+{% for process in list_process_alerts %}
+  - alert: {{ process.capitalize()|e }}ProcessDown
+    expr: node_systemd_unit_state{instance="{{ host|e }}",name="{{ process|e }}.service", state="active"} == 0
+    labels:
+      severity: critical
+    annotations:
+      summary: "Instance {{ host|e }}: {{ process.capitalize()|e }} Process Down"
+      description: "{{ host.capitalize()|e }} has a {{ process.capitalize()|e }} Process Down (current value: {{ '{{' }} $value {{ '}}' }})"
+{% endfor %}
+{% endfor %}

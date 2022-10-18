@@ -1,0 +1,9 @@
+---
+- name: Create Alertmanager file config with owner and permissions
+  template:
+    src: templates/alertmanager/alertmanager.yml.j2
+    dest: /root/monitoring/alertmanager/alertmanager.yml
+    owner: root
+    group: root
+    mode: '0644'
+

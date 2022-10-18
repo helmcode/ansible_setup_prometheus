@@ -1,0 +1,14 @@
+[Unit]
+Description=Prometheus Server
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/prometheus --config.file=/root/monitoring/prometheus/prometheus.yml
+StandardOutput=/var/log/prometheus/prometheus.log
+StandardError=/var/log/prometheus/prometheus.log
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+Alias=prometheus.service

@@ -1,0 +1,44 @@
+---
+- name: Clean old config.
+  file:
+    state: absent
+    path: /root/monitoring
+
+- name: Create temporal directory for packages.
+  file:
+    path: /tmp/prometheus
+    state: directory
+    mode: '0755'
+
+- name: Create monitoring base directory.
+  file:
+    path: /root/monitoring
+    state: directory
+    mode: '0755'
+
+- name: Download all packages of Prometheus.
+  shell:
+    cmd: aws s3 sync "{{ s3_uri }}" /tmp/prometheus/
+
+- name: Extract packages.
+  unarchive:
+    src: "/tmp/prometheus/{{ item.package }}.tar.gz"
+    dest: "/root/monitoring/"
+    remote_src: yes
+  loop:
+    - { name: "", package: "{{ list_prometheus_packages.prometheus }}" }
+    - { name: "", package: "{{ list_prometheus_packages.node_exporter }}" }
+    - { name: "", package: "{{ list_prometheus_packages.alertmanager }}" }
+
+- name: Rename monitoring directories.
+  shell:
+    cmd: mv "/root/monitoring/{{ item.package }}" "/root/monitoring/{{ item.name }}"
+  loop:
+    - { name: "prometheus", package: "{{ list_prometheus_packages.prometheus }}" }
+    - { name: "node_exporter", package: "{{ list_prometheus_packages.node_exporter }}" }
+    - { name: "alertmanager", package: "{{ list_prometheus_packages.alertmanager }}" }
+
+- name: Cleanup.
+  file:
+    state: absent
+    path: "/tmp/prometheus"
