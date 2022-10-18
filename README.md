@@ -7,7 +7,7 @@ Este role instala, configura y crea servicios de:
 - Alertmanager
 - Grafana
 
-Requisitos necesarios para usar este Role:
+*Requisitos necesarios para usar este Role:*
 
 - Descargar los paquetes para Linux de prometheus, node exporter y alertmanager del [repositorio oficial](https://prometheus.io/download/).
 - Subir los paquetes a un bucket de S3. Del cual indicaremos su URI como en este ejemplo:
@@ -36,6 +36,8 @@ list_prometheus_packages:
   alertmanager: "alertmanager-0.24.0.linux-amd64"
   grafana: "grafana_9.2.1_amd64.deb"
 ```
+
+- Tener el Role de [aws_profile](https://github.com/helmcode/ansible_aws_profile)
 
 
 ### Prometheus Config:
